@@ -155,6 +155,45 @@ map和switchMap 转换方法
             "${it.fastName} ${it.lastName}"
         }
      switchMap
+WorkManager
+    1 定义一个后台任务，并实现逻辑
+    class SimpleWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+        override fun doWork(): Result {
+            Log.d("SimpleWorker", "do work in SimpleWorker")
+            return Result.success()
+        }
+    }
+    2 配置后台任务运行条件和约束信息，并构建后台任务请求
+         //单此运行的后台任务请求
+                var request = OneTimeWorkRequest.Builder(SimpleWorker::class.java).build()
+         //构建周期行的后台任务，间隔不能少于15分钟
+          var request1 =
+                PeriodicWorkRequest
+                .Builder(SimpleWorker::class.java, 15, TimeUnit.SECONDS).build()
 
 
+                setInitiaDelay(5,TimeUnit.MINUTTES) //延迟五分钟执行
+                addTag("simple") //用于取消任务    WorkManager.getInstance(this).cancelAllWorkByTag()
+    3 将和后台任务请求传入WorkManager 的 enqueue()方法中，系统会在合适的时间运行
+        WorkManager.getInstance(this).enqueue(request)
+序列化  Serializable和 Parcelable
+        class Person : Serializable{}
+
+        @Parcelable
+        class Person():Parcelable
+深色主题
+    Android 10.0引入深色主题
+协程
+    创建协程作用域
+    GlobalScope.launch{} 不保证作用域中代码执行完成
+    runBlocking{}  保证作用域中所有子协程代码执行完成  会阻塞当前线程
+
+    launch 函数创建多个协程，必须在作用域中使用
+    delay() 函数是一个非阻塞是的挂起函数，只会挂起当前协程，不影响其他协程的运行
+    suspend 关键字声明挂起函数 挂起函数可以相互调用
+    coroutineScope  挂起函数： 也是一个挂起函数。他的特点会继承外部的协程的作用域并创建一个字作用域，保证作用域所有子协程代码执行完成
+       runBlocking 和恶coroutineScope非常类似 前者会阻塞线程，后者只会阻塞当前协程，既不影响其他协程也不影响任何线程
+    asyn 函数 创建一个新的子协程并返回一个Deferred对象。要想回去代码块的结果，只需调用Deferred的await()方法
+        awite 方法会造成协程阻塞
+    withContext(Dispatchers.Default) asyn的简化版
 
