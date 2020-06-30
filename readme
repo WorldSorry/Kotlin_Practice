@@ -1,0 +1,160 @@
+
+标准函数
+    with  run   apply无返回值
+
+静态函数
+    所有方法成为静态
+    object Util{
+        fun doAction(){}
+    }
+
+    单独一个静态
+    companion object {
+    @JvmStatic
+        fun doAction(){
+
+        }
+    }
+    @JvmStatic 注解只能添加到单例类或者 companion object中的方法上
+
+延迟初始化
+    lateinit
+    private lateinit var adapter:MsgAdapter
+    ::adapter.isInitialized 判断adapter是否初始化  固定用法
+
+密封类
+    1.使用sealed修饰 2.必须可以被继承 3.密封类及所有子类必须定义在同一文件的顶层位置
+
+fragment用法
+    返回栈 addToBackStack
+    private fun replaceFragment(){
+        var fragment=supportFragmentManager
+        val transaction=fragmentManager.beginTransaction()
+        transaction.replace()
+        transaction.addToBackStack()
+        transaction.commit()
+       }
+
+扩展函数
+    fun ClassName.methodName():Int{}
+
+运算符重载
+    operator 关键字
+
+高阶函数
+     函数类型参数定义   (函数名:(数据类型,数据类型)->返回值)
+     var count = num1AndNum2(10, 20) { num1, num2 ->
+            num1 + num2
+        }
+        print("thread is running $count")
+
+     fun num1AndNum2(num1: Int, num2: Int, func: (Int, Int) -> Int): Int {
+        return func(num1, num2)
+     }
+     //效果相当于 apply
+     fun StringBuilder.build(block: StringBuilder.() -> Unit): StringBuilder {
+         block()
+         return this
+     }
+
+     java实现  lambda 相当于 Function接口
+     public static int num1AndNum2(int num1,int num2,Function function){
+        int result=(int) function.invoke(num1,num2);
+        return result;
+     }
+
+
+内联函数
+    在高阶函数前加 inline。
+    原理：将lambda表达式替换到函数调用的地方。
+    noinline 多个lambda时 标记为非内联函数。
+    内联的函数类型参数在编译时会被进行代码替换，因此它没有真正的参数属性。非内联的函数类型参数可以自由传递给其
+    他函数，内联函数只允许传递给另一个内联函数。
+    crossinline 解决内联函数允许使用return，高阶函数中匿名实现类不能出现return冲突问题，相当于一个契约，约定
+    高阶函数的匿名类实现中不使用return。
+泛型和委托
+    fun <T>  action(param:T):T{
+        return param
+    }
+    class MyClass<T>{
+     fun action(param:T):T{
+            return param
+        }
+    }
+    泛型限制
+    fun<T:Number> method(param:T):T{
+        return param
+    }
+    <*>不关心或者不知道泛型的具体类型
+    Any 泛型上界默认any  如果不想泛型类型为null 只需要将泛型上界设定为any
+    类委托
+    通过关键字by
+    class MySet<T>(val helperSet:HashSet<T>):Set<T> by helperSet{
+    //可重写自己需要的函数
+    }
+    属性委托
+    class MyClass {
+        var p by Delegate()
+    }
+    class Delegate {
+        var propValue: Any? = null
+        /**
+         * MyClass 待变在MyClass类中使用
+         * KProperty<*> 是kotlin中的属性操作类
+         */
+        operator fun getValue(myClass: MyClass, prop: KProperty<*>): Any? {
+            return propValue
+        }
+
+        operator fun setValue(myClass: MyClass, prop: KProperty<*>, value: Any?) {
+            propValue = value
+        }
+    }
+
+
+    by Lazy  Lazy相当于下面代码
+
+    class Later<T>(val block:()->T){
+        var value:Any?=null
+        operator fun getValue(any:Any?,prop:KProperty<*>):T{
+            if(value==null){
+                value=block()
+            }
+            return value as T
+        }
+    }
+    fun<T> later(block:()->T)=Later(block) 使用顶层函数
+infix函数
+    1 infix函数不能定义成顶层函数，它必须是某个类的成员函数，可以使用扩展函数的方式定义到某个类中
+    2 infix函数必须接受且只能接受一个参数，参数类型没有限制
+ViewModel
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+              .create(ThirdViewModel::class.java)
+    带参数的viewModel，实现ViewModelProvider.Factory
+    viewModel =
+                ViewModelProvider(this, ThirdViewModelFactory(3)).get(ThirdViewModel::class.java)
+Lifecycles组件
+
+    lifecycle.addObserver(MyObserver())
+    class MyObserver : LifecycleObserver {
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+        fun activityStart() {
+            Log.d("MyObserver","activityStart")
+        }
+        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+        fun activityStop(){
+            Log.d("MyObserver","activityStop")
+        }
+    }
+map和switchMap 转换方法
+    map
+     private val userLiveData = MutableLiveData<User>()
+        val userName: LiveData<String> = Transformations.map(userLiveData) {
+            "${it.fastName} ${it.lastName}"
+        }
+     switchMap
+
+
+
