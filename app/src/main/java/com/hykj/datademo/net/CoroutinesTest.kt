@@ -21,9 +21,7 @@ fun main() {
                 5 + 54
             }.await()
             println(result)
-
         }
-
     }
 
 
