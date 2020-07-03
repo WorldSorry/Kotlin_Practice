@@ -195,4 +195,9 @@ WorkManager
     asyn 函数 创建一个新的子协程并返回一个Deferred对象。要想回去代码块的结果，只需调用Deferred的await()方法
         awite 方法会造成协程阻塞
     withContext(Dispatchers.Default) asyn的简化版
+git
+    git add .  //添加版本控制
+    git commit -m "First commit." 本地提交操作
+    git push origin master 提交到远程版本控制
+
 

@@ -1,9 +1,6 @@
 package com.hykj.datademo.net
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 //fun main() {
 //    GlobalScope.launch {
@@ -17,9 +14,12 @@ import kotlinx.coroutines.runBlocking
 fun main() {
     runBlocking {
         launch {
-            var result = async {
-                5 + 54
-            }.await()
+//            var result = async {
+//                5 + 54
+//            }.await()
+            var result= withContext(Dispatchers.Default){
+                5+60
+            }
             println(result)
         }
     }

@@ -22,7 +22,6 @@ class WorkManagerActivity : AppCompatActivity() {
                 .Builder(SimpleWorker::class.java, 15, TimeUnit.SECONDS).build()
 
         doWorkBtn.setOnClickListener {
-
             var request = OneTimeWorkRequest.Builder(SimpleWorker::class.java).build()
             WorkManager.getInstance(this).enqueue(request)
         }
