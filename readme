@@ -1,4 +1,6 @@
 
+* 将数组转变成可变长度参数
+
 标准函数
     with  run   apply无返回值
 
@@ -199,5 +201,15 @@ git
     git add .  //添加版本控制
     git commit -m "First commit." 本地提交操作
     git push origin master 提交到远程版本控制
+将开源库发布到jcenter仓库
+    注册Bintray账号   https://bintray.com
+    创建Repository仓库
+    as 安装插件 bintray-release
+        并引入
+        apply plugin:'com.novoda.bintray-release'
+        dependencies{
+                classpath'com.novoda.bintray-release:0.9.1'
+        }
+        library/build.gradke中配置publish闭包来配置参数
 
 
